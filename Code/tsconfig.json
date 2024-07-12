@@ -1,0 +1,17 @@
+// # Tạo file tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES6", // biên dịch sang kiểu ES6
+    "module": "commonjs", // tiêu chuẩn nodejs
+    "outDir": "js", // đầu ra compile trong thư mục js
+    "watch": true, // thay đổi file ts k cần compile lại
+    "removeComments" : true,
+    "lib": [
+      "es2015", // fix lỗi promise
+      "DOM", // fix lỗi console
+    ],
+  },
+  "exclude": [
+      "css", // bỏ k compile các file ts trong thư mục css
+  ]
+}
