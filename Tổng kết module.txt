@@ -1,5 +1,5 @@
 Typescript
-Khi chạy sẽ biên dịch sang JS.
+Khi chạy sẽ biên dịch sang JS. 
 Nên dùng khi dự án lớn.
 
 
@@ -18,14 +18,14 @@ Dùng a?:string khi a có thể là string hoặc không có giá trị
 => refer tới "Projects / MoveWorld"
 
 Lệnh tsc sẽ compile mặc định mọi file ts kể từ thư mục hiện tại, nếu chạy cụ thể tsc 1 file nào đó như bth sẽ bỏ qua tsconfig.json => điều này làm 1 vài options cần có bị thiếu dẫn đến lỗi k thể compile trong 1 số TH
-VD: Viết tsconfig.json -> compilerOptions có "outDir": "js" -> chạy lệnh tsc thư mục gốc k có tham số gì hết => toàn bộ file js được compile ra trong thư mục js
+VD: Viết tsconfig.json -> compilerOptions có "outDir": "js" -> chạy lệnh tsc thư mục gốc k có tham số gì hết => toàn bộ file ts được compile ra trong thư mục js
 
 -> "allowSyntheticDefaultImports": true, trong tsconfig giúp import được như bth: import React from "react";
 Nếu k có buộc phải dùng: import * as React from "react"; với default export
 
 -> "isolatedModules": true
 --> Trong typscript mặc định mọi file ts đều phải có export để lấy ra ngoài (ES6, còn common js của nodejs ta k xét)
-option isolatedModules sẽ check lỗi này, nếu 1 file k có export thì sẽ báo lỗi. Bỏ options này đi cũng được thôi, sẽ k báo lỗi nhưng 1 file ts k có export thì vô dụng chả làm được gì
+option isolatedModules sẽ check lỗi này, nếu 1 file k có export thì sẽ báo lỗi.
 
 --> Tùy vào config tsconfig và webpack mà có thể import export trong react typescript gây lỗi: 
 Tạo react typescript bằng CRA, ta có thể import image tùy ý mà k cần đuôi file extension cũng như khai báo module gì. VD: import logo from "./logo";
@@ -44,14 +44,12 @@ File .d.ts luôn được sinh ra tự động trong typescript, nhưng khi dự
 
 
 # Type interface class
-Thường thì dùng cái gì cũng đươc nhưng nếu muốn có 1 sự phân hóa rạch ròi thì:
 - type định nghĩa ra các kiểu dữ liệu phức tạp mới như "string | number", kết hợp nhiều loại toán tử tạo ra 1 kiểu phức tạp mà interface k làm được. 
 - interface thường dùng khi cần định nghĩa 1 đối tượng trong lập trình hướng đối tượng. Nó có thẻ kế thừa và implements (type k có các tính chất này của hướng đối tượng)
 - class chỉ đối tượng cụ thẻ có thuộc tính và hành vi, dùng khi lập trình hướng đối tượng. Mọi thuộc tính đều phải được khai báo giá trị khởi tạo trong constructor
 => Thg dùng interface, khi nào có TH khác yêu cầu mới dùng type. Interface thg dùng để tạo type cho mảng or object
 
--> Number và number trong Typescript:
-number là type nguyên thuỷ lưu số, thường luôn dùng
+-> number là type nguyên thuỷ lưu số, thường luôn dùng
 Number là 1 class có sẵn trong JS, có thuộc tính và hành vi.
 
 
