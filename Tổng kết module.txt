@@ -1,22 +1,28 @@
 Typescript
-Khi chạy sẽ biên dịch sang JS. 
-Nên dùng khi dự án lớn.
+Khi chạy sẽ biên dịch sang JS. Nên dùng khi dự án lớn.
+
+
+
+## TK
+-> Dùng typescript như JS bằng cách dùng as any tránh lỗi
+Typescript dùng được enum
+Dùng string! khi ta chắc chắn nó k thể null hoặc undefined
+Dùng a ?: string 
+
+-> Khai báo kiểu data với Type, Interface, Class
+
+-> File tsconfig.json
+
+-> File declaration.d.ts
 
 
 
 # Basic
--> Dùng typescript như JS bằng cách dùng as any tránh lỗi
-Trong Typescript có enum mà JS k có
-Dùng string! khi ta chắc chắn nó k thể null hoặc undefined
-Dùng a?:string khi a có thể là string hoặc không có giá trị
-
 -> Playground: https://www.typescriptlang.org/play
 
 
 
 # Tạo file tsconfig.json
-=> refer tới "Projects / MoveWorld"
-
 Lệnh tsc sẽ compile mặc định mọi file ts kể từ thư mục hiện tại, nếu chạy cụ thể tsc 1 file nào đó như bth sẽ bỏ qua tsconfig.json => điều này làm 1 vài options cần có bị thiếu dẫn đến lỗi k thể compile trong 1 số TH
 VD: Viết tsconfig.json -> compilerOptions có "outDir": "js" -> chạy lệnh tsc thư mục gốc k có tham số gì hết => toàn bộ file ts được compile ra trong thư mục js
 
@@ -24,17 +30,10 @@ VD: Viết tsconfig.json -> compilerOptions có "outDir": "js" -> chạy lệnh 
 Nếu k có buộc phải dùng: import * as React from "react"; với default export
 
 -> "isolatedModules": true
---> Trong typscript mặc định mọi file ts đều phải có export để lấy ra ngoài (ES6, còn common js của nodejs ta k xét)
+Trong typscript mặc định mọi file ts đều phải có export để lấy ra ngoài (ES6, còn common js của nodejs ta k xét)
 option isolatedModules sẽ check lỗi này, nếu 1 file k có export thì sẽ báo lỗi.
 
---> Tùy vào config tsconfig và webpack mà có thể import export trong react typescript gây lỗi: 
-Tạo react typescript bằng CRA, ta có thể import image tùy ý mà k cần đuôi file extension cũng như khai báo module gì. VD: import logo from "./logo";
-Tạo react typescript bằng 1 số cách khác như trong sharepoint, ta phải import image from "./logo.svg"; và trong phải có 1 file.d.ts khai báo: declare module "*.svg" tương tự với từng loại ảnh sử dụng
-
-Đôi khi việc khai báo index.d.ts nó k hoạt động vì typescript compiler do config gì đó mà nghĩ rằng file này phải được sinh ra tự động từ index.tsx, nên các file tự khai báo module riêng, ta nên đặt cho nó 1 cái tên khác kiểu declaration.d.ts hay bất cứ gì cũng được, tránh tên index ra
-File .d.ts luôn được sinh ra tự động trong typescript, nhưng khi dự án có cả code JS và TS, nó có vai trò làm cầu nối và nhiều TH ta buộc phải sử dụng để tránh lỗi k import được.
-
--> baseUrl đôi lúc phải restart vscode mới có tác dụng. Dùng baseUrl là ta có thể import trực tiếp từ thư mục nó xác định trở đi mà k cần làm gì thêm. Chỉ thêm attribute path nếu ta muốn thêm tiền tố cho nó VD @ chẳng hạn
+-> Dùng baseUrl chỉ thêm attribute path nếu ta muốn thêm tiền tố cho nó VD @ chẳng hạn
 "baseUrl": ".",
 "paths": {
     "@/*": ["./src/*"],
@@ -43,13 +42,9 @@ File .d.ts luôn được sinh ra tự động trong typescript, nhưng khi dự
 
 
 
-# Type interface class
-- type định nghĩa ra các kiểu dữ liệu phức tạp mới như "string | number", kết hợp nhiều loại toán tử tạo ra 1 kiểu phức tạp mà interface k làm được. 
-- interface thường dùng khi cần định nghĩa 1 đối tượng trong lập trình hướng đối tượng. Nó có thẻ kế thừa và implements (type k có các tính chất này của hướng đối tượng)
-- class chỉ đối tượng cụ thẻ có thuộc tính và hành vi, dùng khi lập trình hướng đối tượng. Mọi thuộc tính đều phải được khai báo giá trị khởi tạo trong constructor
-=> Thg dùng interface, khi nào có TH khác yêu cầu mới dùng type. Interface thg dùng để tạo type cho mảng or object
-
--> number là type nguyên thuỷ lưu số, thường luôn dùng
-Number là 1 class có sẵn trong JS, có thuộc tính và hành vi.
+# File declaration.d.ts đôi lúc buộc có mới import được
+VD: 
+Tạo react typescript bằng CRA, ta có thể import image tùy ý mà k cần đuôi file extension cũng như khai báo module gì. VD: import logo from "./logo";
+Tạo react typescript bằng 1 số cách khác như trong sharepoint, ta phải import image from "./logo.svg"; và trong phải có 1 file.d.ts khai báo: declare module "*.svg" tương tự với từng loại ảnh sử dụng. 
 
 
