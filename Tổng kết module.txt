@@ -3,21 +3,14 @@ Khi chạy sẽ biên dịch sang JS. Nên dùng khi dự án lớn.
 
 
 
-## TK
+# Basic
 -> Dùng typescript như JS bằng cách dùng as any tránh lỗi
 Typescript dùng được enum
 Dùng string! khi ta chắc chắn nó k thể null hoặc undefined
 Dùng a ?: string 
 
--> Khai báo kiểu data với Type, Interface, Class
+-> Có 3 kiểu khai báo: type, interface, class
 
--> File tsconfig.json
-
--> File declaration.d.ts
-
-
-
-# Basic
 -> Playground: https://www.typescriptlang.org/play
 
 
@@ -27,7 +20,7 @@ Lệnh tsc sẽ compile mặc định mọi file ts kể từ thư mục hiện 
 VD: Viết tsconfig.json -> compilerOptions có "outDir": "js" -> chạy lệnh tsc thư mục gốc k có tham số gì hết => toàn bộ file ts được compile ra trong thư mục js
 
 -> "allowSyntheticDefaultImports": true, trong tsconfig giúp import được như bth: import React from "react";
-Nếu k có buộc phải dùng: import * as React from "react"; với default export
+Nếu k có buộc phải dùngZ: import * as React from "react"; với default export
 
 -> "isolatedModules": true
 Trong typscript mặc định mọi file ts đều phải có export để lấy ra ngoài (ES6, còn common js của nodejs ta k xét)
