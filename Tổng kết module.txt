@@ -20,7 +20,7 @@ Lệnh tsc sẽ compile mặc định mọi file ts kể từ thư mục hiện 
 VD: Viết tsconfig.json -> compilerOptions có "outDir": "js" -> chạy lệnh tsc thư mục gốc k có tham số gì hết => toàn bộ file ts được compile ra trong thư mục js
 
 -> "allowSyntheticDefaultImports": true, trong tsconfig giúp import được như bth: import React from "react";
-Nếu k có buộc phải dùngZ: import * as React from "react"; với default export
+Nếu k có buộc phải dùng: import * as React from "react"; với default export
 
 -> "isolatedModules": true
 Trong typscript mặc định mọi file ts đều phải có export để lấy ra ngoài (ES6, còn common js của nodejs ta k xét)
@@ -35,9 +35,10 @@ option isolatedModules sẽ check lỗi này, nếu 1 file k có export thì s�
 
 
 
-# File declaration.d.ts đôi lúc buộc có mới import được
-VD: 
-Tạo react typescript bằng CRA, ta có thể import image tùy ý mà k cần đuôi file extension cũng như khai báo module gì. VD: import logo from "./logo";
+# File declaration.d.ts
+File này đôi lúc phải có mới import được. Dùng để định nghĩa type.
+
+VD: Tạo react typescript bằng CRA, ta có thể import image tùy ý mà k cần đuôi file extension cũng như khai báo module gì. VD: import logo from "./logo";
 Tạo react typescript bằng 1 số cách khác như trong sharepoint, ta phải import image from "./logo.svg"; và trong phải có 1 file.d.ts khai báo: declare module "*.svg" tương tự với từng loại ảnh sử dụng. 
 
 
