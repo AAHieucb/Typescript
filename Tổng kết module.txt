@@ -1,44 +1,68 @@
-Typescript
-Khi chạy sẽ biên dịch sang JS. Nên dùng khi dự án lớn.
-
-
-
 # Basic
--> Dùng typescript như JS bằng cách dùng as any tránh lỗi
-Typescript dùng được enum
-Dùng string! khi ta chắc chắn nó k thể null hoặc undefined
-Dùng a ?: string 
+Playground: https://www.typescriptlang.org/play
 
--> Có 3 kiểu khai báo: type, interface, class
+-> tsc k tham số sẽ complie toàn bộ thư mục gốc file.ts sang file.js, dùng tsconfig.json ở thư mục gốc
+tsc <file cụ thể> sẽ complie 1 file và bỏ qua tsconfig.json
 
--> Playground: https://www.typescriptlang.org/play
+-> as any
+a ?: string
+a! => k thể nào null or undefined để typescript k throw nullability warning
+showTopLoading!(); => Silence warning rằng hàm này k thể null or undefined và luôn có thể gọi được.
 
+-> Dùng type khi cần định nghĩa cấu trúc 1 objects
+Dùng interface và class khi cần hướng đối tượng implement, extends lẫn nhau.
 
+-> Khi 1 file export bất cứ thứ gì, file khác có thể import với cú pháp của ES6 để dùng.
+Nếu không, 1 files có thể dùng trực tiếp file khác mà k cần export khi thêm: /// <reference path="mathUtils.ts" /> => đây là cách cũ, chú ý file gốc phải k có export vì nếu có export nó tự coi là 1 module và buộc phải dùng import của ES6 mới được => nên luôn dùng export import cho dễ hiểu, kể cả file.d.ts
 
-# Tạo file tsconfig.json
-Lệnh tsc sẽ compile mặc định mọi file ts kể từ thư mục hiện tại, nếu chạy cụ thể tsc 1 file nào đó như bth sẽ bỏ qua tsconfig.json => điều này làm 1 vài options cần có bị thiếu dẫn đến lỗi k thể compile trong 1 số TH
-VD: Viết tsconfig.json -> compilerOptions có "outDir": "js" -> chạy lệnh tsc thư mục gốc k có tham số gì hết => toàn bộ file ts được compile ra trong thư mục js
+=> Chốt: 1 file.d.ts mà có export thì file khác phải import mới dùng được; file.d.ts mà có export thì file khác phải import mới dùng được; Nếu 1 file.d.ts không có export thì mọi thứ bên trong đều là global mà không cần import cũng dùng được ở file khác, miễn là nó trong phạm vi, không trong phạm vi thì phải thêm vào ts.config.json;
 
--> "allowSyntheticDefaultImports": true, trong tsconfig giúp import được như bth: import React from "react";
-Nếu k có buộc phải dùng: import * as React from "react"; với default export
+-> Luôn dùng string (kiểu nguyên thuỷ), kbk dùng String (object)
 
--> "isolatedModules": true
-Trong typscript mặc định mọi file ts đều phải có export để lấy ra ngoài (ES6, còn common js của nodejs ta k xét)
-option isolatedModules sẽ check lỗi này, nếu 1 file k có export thì sẽ báo lỗi.
+-> enum, namespace
 
--> Dùng baseUrl chỉ thêm attribute path nếu ta muốn thêm tiền tố cho nó VD @ chẳng hạn
-"baseUrl": ".",
-"paths": {
-    "@/*": ["./src/*"],
-    "@/public/*": ["./public/*"]
-}
+-> ReturnType, typeof, keyof
 
 
 
 # File declaration.d.ts
-File này đôi lúc phải có mới import được. Dùng để định nghĩa type.
+Thêm vào tsconfig.json để nhận diện file chỉ khi k nằm trong thư mục chứa các file ts và k nằm trong thư mục được tsconfig.json quét thì thêm:
+{
+  "include": ["src", "declaration.d.ts"]
+}
+Dùng để khai báo biến toàn cục, mở rộng kiểu dữ liệu có sẵn or khai báo kiểu mới, khai báo kiểu cho lib k hỗ trợ typescript để dùng trong typescript
 
-VD: Tạo react typescript bằng CRA, ta có thể import image tùy ý mà k cần đuôi file extension cũng như khai báo module gì. VD: import logo from "./logo";
-Tạo react typescript bằng 1 số cách khác như trong sharepoint, ta phải import image from "./logo.svg"; và trong phải có 1 file.d.ts khai báo: declare module "*.svg" tương tự với từng loại ảnh sử dụng. 
+declare dùng để khai báo mà k cung cấp chi tiết implementation, k thể gán =. Thật ra trong file.d.ts cũng chỉ được khai báo, k được có implemtation, k thể gán =. Điểm khác biệt là declare không tạo ra code JavaScript khi biên dịch, tức chỉ cần khai báo dùng trong TS chứ kp code thực tế. 
+declare ngoài cùng sẽ toàn cục và dùng mà k cần import. Còn nếu export sẽ tự hiểu là dùng riêng trong các module thì phải import, nó sẽ k còn toàn cục.
+=> Chốt: Trong file.d.ts nên luôn dùng declare, khi ra ngoài thì kết hợp export, global thì bỏ export. Vd:
+declare const API_URL: string;
+declare function fetchData(url: string): Promise<any>;
+export { API_URL, fetchData };
+
+VD khi dùng typescript react mà bundler không hỗ trợ file svg. Ta phải có file.d.ts declare module "*.svg" mới chạy được, hoặc tải plugin hỗ trợ.
+
+VD file.d.ts: declare const TEST_CONST: string;
+Dùng như này thì khai báo giá trị ở đâu? K thể gán vì nó sẽ tưởng là redeclare lại biến const là lỗi. Thường chỉ dùng v khi có file js có biến sẵn rồi và khai báo type trong typescript để dùng file js trong ts thôi.
+
+
+
+# Other
+-> erasableSyntaxOnly true là option khiến code strict hơn, để tắt các tính năng:
+- enum
+- Dùng short:
+class JKL {
+  constructor(private foo: string) { }
+}
+Y hệt với:
+class JKL {
+  private foo: string; 
+  constructor(foo: string) {
+    this.foo = foo; 
+  }
+}
+- Export function trong namespace:
+export namespace OhNo {
+    export const LK = () => {};
+}
 
 
