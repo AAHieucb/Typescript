@@ -71,4 +71,59 @@ const user = { name: "Alice", age: 25 };
 type UserType = typeof user; // UserType = { name: string; age: number; }
 type UserKeys = keyof UserType; // UserKeys = "name" | "age"
 
+type FormField = {
+  formField: { name: string; password: string; email: string };
+  error: string | void;
+  a: string;
+};
+let error: FormField["error"] = undefined; // Lấy 1 phần của type khác 
+type UserPreview = Pick<FormField, "error" | "a">;
 
+// Lấy thuộc tính của type khác lồng bên trong tự custom hàm
+type DeepPick<T, K extends string> = 
+  K extends `${infer First}.${infer Rest}`
+    ? First extends keyof T
+      ? { [P in First]: DeepPick<T[First], Rest> }
+      : never
+    : K extends keyof T
+      ? { [P in K]: T[K] }
+      : never;
+type User = {
+  id: number;
+  profile: {
+    name: string;
+    email: string;
+    address: {
+      city: string;
+      country: string;
+    };
+  };
+};
+type UserProfileName = DeepPick<User, "profile.name">;
+const userProfileName: UserProfileName = {
+  profile: {
+    name: "Alice",
+  },
+};
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const fPromise: () => Promise<{a: number, b: string}> = async () => {
+  await sleep(1000);
+  return {
+    a: 1,
+    b: ""
+  }
+}
+type UserX = Exclude<
+  Awaited<ReturnType<typeof fPromise>> | undefined,
+  undefined | null
+>;
+// Exclude<U,T> thì sẽ loại bỏ các kiểu T ra khỏi U, chỉ loại bỏ ở ngoài cùng chứ k check nested
+// Awaited thì lấy giá trị trả về của Promise nếu là Promise
+
+
+export const oAuthProviders = ["discord", "github"] as const;
+export type OAuthProvider = (typeof oAuthProviders)[number];
