@@ -127,3 +127,15 @@ type UserX = Exclude<
 
 export const oAuthProviders = ["discord", "github"] as const;
 export type OAuthProvider = (typeof oAuthProviders)[number];
+
+
+class Car {
+  brand: string = "Toyota";
+}
+type TCar = InstanceType<typeof Car>; // TCar và Car là 2 type y hệt nhau
+// Case dùng InstanceType có ích, là lấy ra instance type của 1 type
+function createInstance<
+  C extends new (...args: any[]) => any // C là 1 hàm constructor nhận bất cứ input nào và cho ra bất cứ output nào, tức nó chỉ cần là 1 hàm constructor thôi
+>(ctor: C): InstanceType<C> {
+  return new ctor();
+}

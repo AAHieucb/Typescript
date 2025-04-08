@@ -23,6 +23,7 @@ Nếu không, 1 files có thể dùng trực tiếp file khác mà k cần expor
 
 -> ReturnType, typeof, keyof
 Pick, Exclude, Awaited
+InstanceType
 Có thể tạo ra 1 function return các type khác nhau dựa trên input đầu vào mà k dùng any => ref tới "_getCurrentUser của SetupProjectNextJS"
 
 
