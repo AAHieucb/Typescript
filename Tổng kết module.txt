@@ -26,6 +26,13 @@ Pick, Exclude, Awaited
 InstanceType
 Có thể tạo ra 1 function return các type khác nhau dựa trên input đầu vào mà k dùng any => ref tới "_getCurrentUser của SetupProjectNextJS"
 
+-> type x?: number tương đương x: number | undefined
+Vd: muốn dùng a[b].includes() với a là {helmet?: string[], rarity: string[]} thì phải viết type của b là "helmet" | "rarity"
+
+K nên dùng type Function mà dùng rõ ra (_: string) => void 
+
+x là [number], y là string[], dùng x.concat(y) sẽ lỗi, buộc phải dùng const z: (string | number)[] = [...x, ...y];
+
 
 
 # File declaration.d.ts

@@ -139,3 +139,9 @@ function createInstance<
 >(ctor: C): InstanceType<C> {
   return new ctor();
 }
+
+const x: number[] = [1, 2];
+const y: string[] = ["", "a"];
+const z: (number | string)[] = [...x,...y];
+
+
