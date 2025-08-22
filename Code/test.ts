@@ -78,6 +78,7 @@ type FormField = {
 };
 let error: FormField["error"] = undefined; // Lấy 1 phần của type khác 
 type UserPreview = Pick<FormField, "error" | "a">;
+type UserPreview2 = Omit<FormField, "error">;
 
 // Lấy thuộc tính của type khác lồng bên trong tự custom hàm
 type DeepPick<T, K extends string> = 
