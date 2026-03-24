@@ -146,3 +146,13 @@ const y: string[] = ["", "a"];
 const z: (number | string)[] = [...x,...y];
 
 
+type Base = Object; // or { }. Đây kp type object chuẩn, mà là bất cứ thứ gì vì là base mọi object
+type RealObjectType = Record<string, unknown>; 
+type RealObjectType2 = {
+  [key: string]: unknown; // Tương tự cách chuẩn định nghĩa 1 kiểu object
+}
+
+
+
+function X<const T extends { [K in keyof typeof Car]?: boolean }>(column: T) {} // X là generic nhận keyof kiểu Car làm key của object, value là boolean
+

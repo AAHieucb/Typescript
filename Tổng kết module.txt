@@ -24,7 +24,8 @@ Nếu không, 1 files có thể dùng trực tiếp file khác mà k cần expor
 -> ReturnType, typeof, keyof
 Pick, Exclude, Awaited, Omit
 InstanceType
-Có thể tạo ra 1 function return các type khác nhau dựa trên input đầu vào mà k dùng any => ref tới "_getCurrentUser của SetupProjectNextJS"
+z.infer<typeof UserSchema>
+Có thể tạo ra 1 function return các type khác nhau dựa trên input đầu vào mà k dùng any => ref tới "_getCurrentUser của SetupProjectNextJS"nfer
 
 -> type x?: number tương đương x: number | undefined
 Vd: muốn dùng a[b].includes() với a là {helmet?: string[], rarity: string[]} thì phải viết type của b là "helmet" | "rarity"
@@ -33,26 +34,27 @@ K nên dùng type Function mà dùng rõ ra (_: string) => void
 
 x là [number], y là string[], dùng x.concat(y) sẽ lỗi, buộc phải dùng const z: (string | number)[] = [...x, ...y];
 
+-> Cách định nghĩa chuẩn cho kiểu object là k được dùng type Object nhé.
+
 
 
 # File declaration.d.ts
-Thêm vào tsconfig.json để nhận diện file chỉ khi k nằm trong thư mục chứa các file ts và k nằm trong thư mục được tsconfig.json quét thì thêm:
-{
+Thêm vào tsconfig.json để nhận diện file chỉ khi k nằm trong thư mục chứa các file ts và k nằm trong thư mục được tsconfig.json quét thì thêm: {
   "include": ["src", "declaration.d.ts"]
 }
-Dùng để khai báo biến toàn cục, mở rộng kiểu dữ liệu có sẵn or khai báo kiểu mới, khai báo kiểu cho lib k hỗ trợ typescript để dùng trong typescript
 
-declare dùng để khai báo mà k cung cấp chi tiết implementation, k thể gán =. Thật ra trong file.d.ts cũng chỉ được khai báo, k được có implemtation, k thể gán =. Điểm khác biệt là declare không tạo ra code JavaScript khi biên dịch, tức chỉ cần khai báo dùng trong TS chứ kp code thực tế. 
-declare ngoài cùng sẽ toàn cục và dùng mà k cần import. Còn nếu export sẽ tự hiểu là dùng riêng trong các module thì phải import, nó sẽ k còn toàn cục.
-=> Chốt: Trong file.d.ts nên luôn dùng declare, khi ra ngoài thì kết hợp export, global thì bỏ export. Vd:
+- Trong file này chỉ được khai báo, k được có implementation, k thể gán =, có thể mở rộng kiểu dữ liệu có sẵn or khai báo kiểu mới. Bién khai báo trong file này là toàn cục
+- Nếu dùng declare sẽ không tạo ra code JavaScript khi biên dịch, tức chỉ khai báo dùng trong TS chứ kp code thực tế. 
+- Khai báo thì dùng global trực tiếp mà k cần import, declare cũng vậy. Còn nếu export sẽ tự hiểu là dùng riêng trong các module thì phải import, nó sẽ k còn toàn cục.
+=> Chốt: thường dùng khai báo biến global, hiếm khi dùng declare.
+
+Vd biến export ra k còn là toàn cục:
 declare const API_URL: string;
 declare function fetchData(url: string): Promise<any>;
 export { API_URL, fetchData };
-
 VD khi dùng typescript react mà bundler không hỗ trợ file svg. Ta phải có file.d.ts declare module "*.svg" mới chạy được, hoặc tải plugin hỗ trợ.
-
-VD file.d.ts: declare const TEST_CONST: string;
-Dùng như này thì khai báo giá trị ở đâu? K thể gán vì nó sẽ tưởng là redeclare lại biến const là lỗi. Thường chỉ dùng v khi có file js có biến sẵn rồi và khai báo type trong typescript để dùng file js trong ts thôi.
+VD: 
+declare const TEST_CONST: string; => Dùng như này thì khai báo giá trị ở đâu? K thể gán vì nó sẽ tưởng là redeclare lại biến const là lỗi. Thường chỉ dùng v khi có file js có biến sẵn rồi và khai báo type trong typescript để dùng file js trong ts thôi.
 
 
 
@@ -74,5 +76,21 @@ class JKL {
 export namespace OhNo {
     export const LK = () => {};
 }
+
+
+
+
+
+VD bth dùng try catch mà bắt từng loại error thì hay kiểu:
+if(exception is UnauthorizedError) ....
+else if (exception is RandomError) ....
+Nhưng nếu làm v, hàm try throw 1 error mới ra thêm 1 đk check thì từng chỗ tái sử dụng hàm đó mà catch Error như v sẽ phải sửa và ta k thể kiểm soát hết được
+Giải pháp trong typescript là biến error type thành phạm vi 1 list const, thì nếu list thay đổi, trình biên dịch sẽ báo lỗi typescript ngay
+VD ban đầu:
+function err<E extends { reason: string }>(error: E) { ... }
+Biến reason thành const string:
+function err<const R extends string, E extends { reason: R }>(error: E) { ... }
+Như vậy typescript tự động detect hàm gọi err trả ra những const nào báo lỗi mọi nơi nếu thiếu nó
+
 
 
