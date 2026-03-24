@@ -1,23 +1,35 @@
 # Basic
 Playground: https://www.typescriptlang.org/play
 
--> tsc k tham số sẽ complie toàn bộ thư mục gốc file.ts sang file.js, dùng tsconfig.json ở thư mục gốc
-tsc <file cụ thể> sẽ complie 1 file và bỏ qua tsconfig.json
+-> npm i -g typescript
+tsc -v 
+tsc => complie toàn bộ thư mục gốc .ts sang .js, nếu có tsconfig.json ở thư mục gốc và sẽ dùng config đó
+tsc file.ts => sẽ complie 1 file cụ thể và bỏ qua tsconfig.json
+tsc --init => khởi tạo kèm tsconfig.json
 
--> as any
-a ?: string
-a! => k thể nào null or undefined để typescript k throw nullability warning
-showTopLoading!(); => Silence warning rằng hàm này k thể null or undefined và luôn có thể gọi được.
+-> Break mind:
+- a ?: string => tương đương string | undefined | <thiếu key a>
+a : string | undefined | null => key a vẫn bắt buôc phải tồn tại
+- a! hoặc showTopLoading!() => k thể null or undefined, typescript k throw nullability warning
+- as any tắt kiểm tra dữ liệu
+unknown => tương tự any nhưng phải check dữ liệu trước khi dùng. VD: if (typeof value === "string") value.toUpperCase();
+- Luôn dùng string (primitive type), k dùng String (object)
+Kbh dùng type Function mà dùng rõ ra (_: string) => void 
+Kbh dùng type Object mà dùng rõ ra. 
+VD: let a: Record<string, unknown>;
+VD: type User = {
+  name: string;
+  age: number;
+};
+- x là [number], y là string[], dùng x.concat(y) sẽ lỗi, phải là const z: (string | number)[] = [...x, ...y];
+Dùng a[b].includes() với a là {helmet?: string[], rarity: string[]}. Nếu b cố định thì "helmet" | "rarity", nếu b không cố định thì để type b là string
+
+
+
+# 
 
 -> Dùng type khi cần định nghĩa cấu trúc 1 objects
 Dùng interface và class khi cần hướng đối tượng implement, extends lẫn nhau.
-
--> Khi 1 file export bất cứ thứ gì, file khác có thể import với cú pháp của ES6 để dùng.
-Nếu không, 1 files có thể dùng trực tiếp file khác mà k cần export khi thêm: /// <reference path="mathUtils.ts" /> => đây là cách cũ, chú ý file gốc phải k có export vì nếu có export nó tự coi là 1 module và buộc phải dùng import của ES6 mới được => nên luôn dùng export import cho dễ hiểu, kể cả file.d.ts
-
-=> Chốt: 1 file.d.ts mà có export thì file khác phải import mới dùng được; file.d.ts mà có export thì file khác phải import mới dùng được; Nếu 1 file.d.ts không có export thì mọi thứ bên trong đều là global mà không cần import cũng dùng được ở file khác, miễn là nó trong phạm vi, không trong phạm vi thì phải thêm vào ts.config.json;
-
--> Luôn dùng string (kiểu nguyên thuỷ), kbk dùng String (object)
 
 -> enum, namespace
 
@@ -27,18 +39,16 @@ InstanceType
 z.infer<typeof UserSchema>
 Có thể tạo ra 1 function return các type khác nhau dựa trên input đầu vào mà k dùng any => ref tới "_getCurrentUser của SetupProjectNextJS"nfer
 
--> type x?: number tương đương x: number | undefined
-Vd: muốn dùng a[b].includes() với a là {helmet?: string[], rarity: string[]} thì phải viết type của b là "helmet" | "rarity"
-
-K nên dùng type Function mà dùng rõ ra (_: string) => void 
-
-x là [number], y là string[], dùng x.concat(y) sẽ lỗi, buộc phải dùng const z: (string | number)[] = [...x, ...y];
-
--> Cách định nghĩa chuẩn cho kiểu object là k được dùng type Object nhé.
-
 
 
 # File declaration.d.ts
+
+1 file.ts export sẽ coi là 1 module và 1 file.ts khác luôn có thể import để dùng như JS => luôn dùng
+Nếu 1 file.ts k có export thì file khác có thể thêm /// <reference path="file gốc.ts" /> thì dùng được code file gốc như bth => k nên dùng
+file.d.ts là file global declaration chỉ định nghĩa type global, k có code thực thi. File này đặc biệt vì đặt ở bất cứ đâu, k cần export mà các file khác vẫn dùng bth.
+
+
+
 Thêm vào tsconfig.json để nhận diện file chỉ khi k nằm trong thư mục chứa các file ts và k nằm trong thư mục được tsconfig.json quét thì thêm: {
   "include": ["src", "declaration.d.ts"]
 }
