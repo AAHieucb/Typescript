@@ -26,18 +26,40 @@ Dùng a[b].includes() với a là {helmet?: string[], rarity: string[]}. Nếu b
 
 
 
-# 
-
+# Utility trong typescript
 -> Dùng type khi cần định nghĩa cấu trúc 1 objects
 Dùng interface và class khi cần hướng đối tượng implement, extends lẫn nhau.
 
+-> type A = ReturnType<typeof f1>; => type A là giá trị trả về của hàm f1
+
+-> type C = keyof o2; => type C có giá trị là 1 trong các key của object o2
+
+-> const p: Promise<string> = new Promise(resolve => { resolve("Hello"); });
+
+-> type E = Awaited<ReturnType<typeof fPromise>> => giá trị trả về của hàm fPromise sau khi await thành kiểu gì
+
+-> type F = "a" | "b" | "c"; type B = "a"; type Result = Exclude<A, B>; => "b" | "c" => loại bỏ giá trị nào khỏi tập giá trị Union
+
+-> type G = Omit<User, "password">; => loại bỏ key khỏi object type
+
+-> type D = Pick<o3, "error" | "a">; => type D giống object o3 nhưng chỉ tính có 2 fields "error" và "a"
+
+-> type B = typeof o1; => type B tự suy ra từ object o1, o1 phải là 1 object instance nhé
+
+-> type H = InstanceType<typeof ClassName> => lấy ra instance type của class, phải dùng typeof với 1 class name
+
+-> type MyAwaited<T> = T extends Promise<infer U> ? U : T;
+type A = MyAwaited<Promise<string>>; // string
+infer chỉ dùng trong conditional, nó lấy type bên trong của 1 cái gì 
+
+
+
+
+
+
 -> enum, namespace
 
--> ReturnType, typeof, keyof
-Pick, Exclude, Awaited, Omit
-InstanceType
-z.infer<typeof UserSchema>
-Có thể tạo ra 1 function return các type khác nhau dựa trên input đầu vào mà k dùng any => ref tới "_getCurrentUser của SetupProjectNextJS"nfer
+
 
 
 
