@@ -81,34 +81,23 @@ namespace User {
 
 
 
-# 
-
-
-
 # File declaration.d.ts
+1 file.ts export coi là 1 module và 1 file.ts khác luôn có thể import để dùng như JS => luôn dùng
+Nếu 1 file.ts k có export thì file khác có thể thêm /// <reference path="file gốc.ts" /> thì dùng được code file gốc như bth => bỏ
+file.d.ts là file global declaration chỉ định nghĩa type global. Nó đặc biệt vì k cần export hay reference vẫn dùng đc ở các file khác.
 
-1 file.ts export sẽ coi là 1 module và 1 file.ts khác luôn có thể import để dùng như JS => luôn dùng
-Nếu 1 file.ts k có export thì file khác có thể thêm /// <reference path="file gốc.ts" /> thì dùng được code file gốc như bth => k nên dùng
-file.d.ts là file global declaration chỉ định nghĩa type global, k có code thực thi. File này đặc biệt vì đặt ở bất cứ đâu, k cần export mà các file khác vẫn dùng bth.
-
-
-
-Thêm vào tsconfig.json để nhận diện file chỉ khi k nằm trong thư mục chứa các file ts và k nằm trong thư mục được tsconfig.json quét thì thêm: {
-  "include": ["src", "declaration.d.ts"]
-}
-
-- Trong file này chỉ được khai báo, k được có implementation, k thể gán =, có thể mở rộng kiểu dữ liệu có sẵn or khai báo kiểu mới. Bién khai báo trong file này là toàn cục
-- Nếu dùng declare sẽ không tạo ra code JavaScript khi biên dịch, tức chỉ khai báo dùng trong TS chứ kp code thực tế. 
-- Khai báo thì dùng global trực tiếp mà k cần import, declare cũng vậy. Còn nếu export sẽ tự hiểu là dùng riêng trong các module thì phải import, nó sẽ k còn toàn cục.
-=> Chốt: thường dùng khai báo biến global, hiếm khi dùng declare.
-
+- Nếu file k nằm trong thư mục tsconfig.json quét thì phải thêm: { "include": ["src", "declaration.d.ts"] }
+- File này chỉ được khai báo kiểu mới or mở rộng kiểu dữ liệu có sẵn, k được có code logic, k thể gán -
+- Dùng keyword declare sẽ không tạo ra code JS khi biên dịch, tức chỉ khai báo dùng trong TS chứ kp code thực tế. 
+- Bién khai báo trong file luôn là toàn cục. Nếu dùng export thì mất tính năng toàn cục và chạy như 1 module bth.
 Vd biến export ra k còn là toàn cục:
 declare const API_URL: string;
 declare function fetchData(url: string): Promise<any>;
 export { API_URL, fetchData };
-VD khi dùng typescript react mà bundler không hỗ trợ file svg. Ta phải có file.d.ts declare module "*.svg" mới chạy được, hoặc tải plugin hỗ trợ.
-VD: 
-declare const TEST_CONST: string; => Dùng như này thì khai báo giá trị ở đâu? K thể gán vì nó sẽ tưởng là redeclare lại biến const là lỗi. Thường chỉ dùng v khi có file js có biến sẵn rồi và khai báo type trong typescript để dùng file js trong ts thôi.
+VD khi dùng typescript react mà bundler không hỗ trợ file svg thì phải có file.d.ts declare module "*.svg" mới chạy được, hoặc tải plugin hỗ trợ.
+VD: declare const TEST_CONST: string; => Nếu dùng như này thì khai báo giá trị ở đâu? k thể gán vì nó sẽ tưởng là redeclare lại biến const là lỗi. Thường chỉ dùng v khi có file js có biến sẵn rồi và khai báo type trong typescript để dùng file js trong ts thôi.
+
+
 
 
 
