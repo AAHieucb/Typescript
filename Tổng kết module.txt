@@ -99,40 +99,26 @@ VD: declare const TEST_CONST: string; => Nếu dùng như này thì khai báo gi
 
 
 
+# tsconfig.json => ref tới "NextJS"
+- erasableSyntaxOnly: true => option khiến code strict hơn, cản các tính năng
+Dùng sort: class JKL { constructor(private foo: string) { } } 
+Y hệt với: class JKL {
+  private foo: string; 
+  constructor(foo: string) { this.foo = foo; }
+}
+Export function trong namespace: export namespace OhNo { export const LK = () => {}; }
+
 
 
 # Other
--> erasableSyntaxOnly true là option khiến code strict hơn, để tắt các tính năng:
-- Dùng short:
-class JKL {
-  constructor(private foo: string) { }
+-> VD bth dùng try catch mà bắt từng loại error thì hay kiểu:
+catch {
+  if(exception is UnauthorizedError) ....
+  else if (exception is RandomError) ....
 }
-Y hệt với:
-class JKL {
-  private foo: string; 
-  constructor(foo: string) {
-    this.foo = foo; 
-  }
-}
-- Export function trong namespace:
-export namespace OhNo {
-    export const LK = () => {};
-}
-
-
-
-
-
-VD bth dùng try catch mà bắt từng loại error thì hay kiểu:
-if(exception is UnauthorizedError) ....
-else if (exception is RandomError) ....
-Nhưng nếu làm v, hàm try throw 1 error mới ra thêm 1 đk check thì từng chỗ tái sử dụng hàm đó mà catch Error như v sẽ phải sửa và ta k thể kiểm soát hết được
-Giải pháp trong typescript là biến error type thành phạm vi 1 list const, thì nếu list thay đổi, trình biên dịch sẽ báo lỗi typescript ngay
-VD ban đầu:
-function err<E extends { reason: string }>(error: E) { ... }
-Biến reason thành const string:
-function err<const R extends string, E extends { reason: R }>(error: E) { ... }
-Như vậy typescript tự động detect hàm gọi err trả ra những const nào báo lỗi mọi nơi nếu thiếu nó
-
+Nhưng nếu làm v, hàm try throw 1 error mới thì từng chỗ tái sử dụng hàm đó mà catch Error sẽ đều phải sửa.
+Giải pháp trong typescript là biến error type thành phạm vi 1 list const, thì nếu list const thay đổi, trình biên dịch sẽ tự báo lỗi typescript ngay
+VD ban đầu: function err<E extends { reason: string }>(error: E) { ... }
+Biến reason thành const string: function err<const R extends string, E extends { reason: R }>(error: E) { ... }
 
 
