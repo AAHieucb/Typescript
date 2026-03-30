@@ -8,11 +8,11 @@ interface IPoint {
   x: number;
 }
 interface Movable extends IPoint {
-  move(): void; // hàm và biến trong interface luôn là public
+  move(): void; // Trong interface luôn là public
 }
 
 class Player implements Movable {
-  x = 0; // K định nghĩa visibility default là public
+  x = 0; // K định nghĩa visibility thì default là public
   private speed: number;
   constructor(speed: number) {
     this.speed = speed;
@@ -57,13 +57,12 @@ const person = new MyNamespace.Person("Bob");
 console.log(person.greet()); // "Hi, I'm Bob"
 
 type Role = "admin" | "user" | "guest";
-const role = "admin" satisfies Role; // satisfies là check 1 object thoả mãn 1 type nào mà k ép kiếu sang type đó.
-
+const role = "admin" satisfies Role; // satisfies là check 1 object thoả mãn 1 type nào 
 
 function f1(): { a: number; b: string } {
   return { a: 1, b: "hello" };
 }
-type T4 = ReturnType<typeof f1>; // ReturnType tạo ra 1 type mới là type trả về của function. Tức type T4 = { a: number; b: string; }
+type T4 = ReturnType<typeof f1>; // ReturnType phải truyền generic vào là 1 type, kp 1 object
 type T1 = ReturnType<(s: string) => void>; // => T1 có type là void.
 type T2 = ReturnType<<T>() => T>; // => T2 có type T
 
@@ -76,11 +75,11 @@ type FormField = {
   error: string | void;
   a: string;
 };
-let error: FormField["error"] = undefined; // Lấy 1 phần của type khác 
-type UserPreview = Pick<FormField, "error" | "a">;
+let error: FormField["error"] = undefined; // Lấy 1 phần của type khác, k cần dùng keyword Pick
+type UserPreview = Pick<FormField, "error" | "a">; 
 type UserPreview2 = Omit<FormField, "error">;
 
-// Lấy thuộc tính của type khác lồng bên trong tự custom hàm
+// Pick chỉ lấy được thuộc tính lv1, DeepPick cân mọi level
 type DeepPick<T, K extends string> = 
   K extends `${infer First}.${infer Rest}`
     ? First extends keyof T
@@ -107,10 +106,20 @@ const userProfileName: UserProfileName = {
   },
 };
 
+type RemoveString<T> = {
+  [K in keyof T]: T[K] extends string ? never : T[K];
+}; // { name: never; age: number; }
+
+const userX: Readonly<{id: number, name: string}> = {
+  id: 1,
+  name: "An",
+};
+// userX.name = "Bình"; // Cannot assign to 'name'
+type UserDTO = Readonly<Pick<User, "id">> & Pick<User, "profile">; // Chỉ readonly 1 field
+
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
 const fPromise: () => Promise<{a: number, b: string}> = async () => {
   await sleep(1000);
   return {
@@ -122,38 +131,39 @@ type UserX = Exclude<
   Awaited<ReturnType<typeof fPromise>> | undefined,
   undefined | null
 >;
-// Exclude<U,T> thì sẽ loại bỏ các kiểu T ra khỏi U, chỉ loại bỏ ở ngoài cùng chứ k check nested
-// Awaited thì lấy giá trị trả về của Promise nếu là Promise
 
-
-export const oAuthProviders = ["discord", "github"] as const;
-export type OAuthProvider = (typeof oAuthProviders)[number];
-
+export const oAuthProviders = ["discord", "github"] as const; // tương đương Readonly<["discord", "github"]>, nếu k có as const sẽ tự suy string[]
+export type OAuthProvider = (typeof oAuthProviders)[number]; // "discord" | "github"
 
 class Car {
+  static table = "cars";
   brand: string = "Toyota";
 }
-type TCar = InstanceType<typeof Car>; // TCar và Car là 2 type y hệt nhau
-type TCarX = typeof Car; // TCar và Car là 2 type y hệt nhau
-// Case dùng InstanceType có ích, là lấy ra instance type của 1 type
+type TCar = InstanceType<typeof Car>; // TCar và Car là 2 type y hệt nhau, tương đương = typeof Car;
+
 function createInstance<
-  C extends new (...args: any[]) => any // C là 1 hàm constructor nhận bất cứ input nào và cho ra bất cứ output nào, tức nó chỉ cần là 1 hàm constructor thôi
+  C extends new (...args: any[]) => any // 1 hàm constructor bất kỳ
 >(ctor: C): InstanceType<C> {
   return new ctor();
 }
+
+type Constructor = new () => any; // Keyword new tức là hàm constructor
+class A {}
+class B {}
+let kl: Constructor;
+kl = A;
+kl = B; // OK vì A và B đều là hàm constructor new được
 
 const x: number[] = [1, 2];
 const y: string[] = ["", "a"];
 const z: (number | string)[] = [...x,...y];
 
-
-type Base = Object; // or { }. Đây kp type object chuẩn, mà là bất cứ thứ gì vì là base mọi object
 type RealObjectType = Record<string, unknown>; 
 type RealObjectType2 = {
   [key: string]: unknown; // Tương tự cách chuẩn định nghĩa 1 kiểu object
 }
 
+function X<const T extends { [K in keyof typeof Car]?: boolean }>(column: T) {} // có typeof thì chỉ lấy Type của constructor truyền key là "table" ok
+function X2<const T extends { [K in keyof Car]?: boolean }>(column: T) {} // truyền key là "brand" vì k có typeof sẽ lấy key của Type Car bth
 
-
-function X<const T extends { [K in keyof typeof Car]?: boolean }>(column: T) {} // X là generic nhận keyof kiểu Car làm key của object, value là boolean
 

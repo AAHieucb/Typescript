@@ -1,4 +1,3 @@
-// Biến toàn cục thì k cần export mà dùng được luôn
 declare const API_URL: string;
 
 // Hàm toàn cục
@@ -7,22 +6,21 @@ declare function logMessage(message: string): void;
 // Interface toàn cục
 interface User {
   id: number;
-  name: string;
-  email?: string; // Thuộc tính có thể có hoặc không
+  email?: string;
 }
 
-// Module tùy chỉnh (Khai báo cho thư viện bên ngoài không có định nghĩa .d.ts)
+// Khi có sẵn thư viện bên ngoài nhưng muốn custom thêm type
 declare module "some-library" {
   export function doSomething(): void;
   export const libraryName: string;
   interface Session {
     user: {
       address: string
-    } & User; // extend default type
+    } & User; // & là extend type cho user
   }
 }
 
-// Namespace (Đóng gói các khai báo liên quan vào một khối)
+// Namespace (Đóng gói các khai báo liên quan vào một khối)s
 declare namespace MyNamespace {
   interface Config {
     apiKey: string;
@@ -31,13 +29,13 @@ declare namespace MyNamespace {
   function initialize(config: Config): void;
 }
 
-// Class (Định nghĩa một lớp trong file .d.ts)
+// Class toàn cục
 declare class Person {
   constructor(name: string, age: number);
   greet(): string;
 }
 
-// Mở rộng interface có sẵn (ví dụ: Window)
+// Mở rộng interface có sẵn VD Window là type có sẵn, thì chỉ cần mở rộng như này
 interface Window {
   myCustomProperty: string;
 }
@@ -45,8 +43,6 @@ interface Window {
 // Export trực tiếp từ file .d.ts
 export function helperFunction(value: string): number;
 export const MAX_LIMIT: number;
-
-// Export default
 export default class DefaultClass {
   constructor(value: string);
   getValue(): string;

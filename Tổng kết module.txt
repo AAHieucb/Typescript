@@ -13,9 +13,10 @@ a : string | undefined | null => key a vẫn bắt buôc phải tồn tại
 - a! hoặc showTopLoading!() => k thể null or undefined, typescript k throw nullability warning
 - as any tắt kiểm tra dữ liệu
 unknown => tương tự any nhưng phải check dữ liệu trước khi dùng. VD: if (typeof value === "string") value.toUpperCase();
+never => giá trị k thể thoả mãn, k tồn tại, nếu function trả về type never tức function kbh return vì bị throw or while(true)
 - Luôn dùng string (primitive type), k dùng String (object)
 Kbh dùng type Function mà dùng rõ ra (_: string) => void 
-Kbh dùng type Object mà dùng rõ ra. 
+Kbh dùng type Object hay {} mà dùng rõ ra. 
 VD: let a: Record<string, unknown>;
 VD: type User = {
   name: string;
@@ -27,6 +28,17 @@ Dùng a[b].includes() với a là {helmet?: string[], rarity: string[]}. Nếu b
 
 
 # Utility trong typescript
+Bản chất pb: 
+- X là giá trị value, object instance
+- X là kiểu Type, Interface
+- X là tên class hay function. 
+Trong case này, X vừa là Type Car, vừa là value là constructor () => new Car()
+
+keyof chỉ nhận type trả ra Type là union của các key
+typeof của JS nhận value và trả ra string mô tả kiểu
+typeof của TS nhận value trả ra Type
+Thường trong <> cũng toàn là Type
+
 -> Dùng type khi cần định nghĩa cấu trúc 1 objects
 Dùng interface và class khi cần hướng đối tượng implement, extends lẫn nhau.
 
@@ -46,13 +58,17 @@ Dùng interface và class khi cần hướng đối tượng implement, extends 
 
 -> type B = typeof o1; => type B tự suy ra từ object o1, o1 phải là 1 object instance nhé
 
--> type H = InstanceType<typeof ClassName> => lấy ra instance type của class, phải dùng typeof với 1 class name
-typeof với class name, function các thứ thì là kiểu () => new User(), phải đặt trong <>
-typeof với object instance thì trả về trực tiếp kiểu của object luôn
+-> type H = InstanceType<typeof ClassName> => typeof ClassName trả ra constructor type vì ClassName có value là constructor. InstanceType sẽ lấy ra instance type từ constructor
 
 -> type MyAwaited<T> = T extends Promise<infer U> ? U : T;
 type A = MyAwaited<Promise<string>>; // string
-infer chỉ dùng trong conditional, nó lấy type bên trong của 1 cái gì 
+infer chỉ dùng trong conditional, nó lấy type bên trong Promise
+
+-> type ReadonlyUser = Readonly<User>; => chỉ gán lần duy nhất khi định nghĩa kèm type, k thể sửa về sau
+
+-> Partial biến type thành optional:
+function updateUser(id: number, data: Partial<User>) {}
+updateUser(1, { name: "New Name" }); // K cần truyền toàn bộ object, chỉ áp dụng cho lv1
 
 
 
