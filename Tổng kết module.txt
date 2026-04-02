@@ -19,12 +19,8 @@ Kbh dùng type Function mà dùng rõ ra (_: string) => void
 Kbh dùng type Object hay {} mà dùng rõ ra. 
 VD: let a: Record<string, unknown>; 
 VD: let b: Record<"admin" | "user", { test: "string" }>; => buộc phải có 2 key là admin và user
-VD: type User = {
-  name: string;
-  age: number;
-};
 - x là [number], y là string[], dùng x.concat(y) sẽ lỗi, phải là const z: (string | number)[] = [...x, ...y];
-Dùng a[b].includes() với a là {helmet?: string[], rarity: string[]}. Nếu b cố định thì "helmet" | "rarity", nếu b không cố định thì để type b là string
+Dùng a[b].includes() với a là {helmet?: string[], rarity: string[]}. Nếu b cố định thì nên để type "helmet" | "rarity", nếu b không cố định thì để type b là string
 
 
 
@@ -136,18 +132,97 @@ Y hệt với: class JKL {
   constructor(foo: string) { this.foo = foo; }
 }
 Export function trong namespace: export namespace OhNo { export const LK = () => {}; }
+- strict: true
+- 
+
+
+
+# Keywords satisfies
+-> UC1:
+var Obj = {
+  value: string | number
+};
+const option = {
+  value: "abc"
+};
+var x = option.value.toLowerCase();
+Muốn option theo kiểu Obj để khi thêm thừa các trường rác khác, nó sẽ báo lỗi thì phải const option: Obj ...
+Nhưng dùng vậy thì option.value.toLowerCase() sẽ báo lỗi vì nó tưởng là string | number chứ kp string
+
+Fix đảm bảo option thỏa mãn Obj nhưng vẫn giữ type của riêng nó:
+const option = {
+  value: "abc",
+  mode: "simple"
+} satisfies Obj;
+=> dùng sau khi gán 1 trong các giá trị của | 
+=> luôn đảm bảo biến có type gì đó hoặc bind với type gì đó nếu dùng type quá 1 lần. Nếu chỉ dùng 1 lần thì k cần định nghĩa type riêng
+
+-> UC2: 
+type RGB = `#{string}` | [number,number,number];
+type PrimaryColor = "red" | "green" | "blue";
+const colors = {
+  blur: [0,0,255],
+  red: "#F00",
+  blue: #0F0",
+}
+console.log(colors.red.toLowerCase());
+Muốn colors phải có đúng type để k có thừa trường, hoặc dùng type này ở đâu đó khác. Nếu dùng colors: Record<PrimaryColor, RGB> đảm bảo đúng type nhưng toLowerCase() báo lỗi
+Fix lấy 1 trong các giá trị của | thì:
+const colors = {
+  blur: [0,0,255],
+  red: "#F00",
+  blue: #0F0",
+} satisfies Record<PrimaryColor, RGB>;
+
+-> UC3:
+type Grade = "A" | "B" | "C" | "D" | "F" | "E";
+function getGrade(grade: Grade): string {
+  switch (grade) {
+    case "A":
+      return "Excellent";
+    case "B":
+      return "Good";
+    case "C":
+      return "Average";
+    case "D":
+      return "Below Average";
+    case "F":
+      return "Failing";
+    default:
+      throw new Error(`Invalid grade:: ${grade satisfies never}`);
+  }
+}
+=> satisfies never đảm bảo 1 biến không thể là các type khác khi rơi vào case này, khiến cho các type khác phải định nghĩ đủ trong switch case.
+
+
+
+# Generic type
+Khi có nhiều type k xác định nhưng cùng common gì đó.
+VD tạo ra generic type Data cho ApiResponse:
+type ApiResponse<Data extends object = { status: number }> = {
+  data: Data
+  isError: boolean
+}
+Type Data là generic mà k xác định sẽ default là { status: number }. Nó cũng phải là type object, VD k được dùng ApiResponse<string>
+type UserResponse = ApiResponse<{ name: string, age: number }>;
+const userResponse: UserResponse = { data: { name: "a", age: 1 }, isError: false };
+const userStatus: ApiResponse = { data: { status: 10 }, isError: false };
 
 
 
 # Other
--> VD bth dùng try catch mà bắt từng loại error thì hay kiểu:
-catch {
-  if(exception is UnauthorizedError) ....
-  else if (exception is RandomError) ....
+-> Biến thành const:
+- Nếu 1 object dùng as const sẽ biến các giá trị bên trong thành fix.
+VD: var a = "abc" => thì a là type "abc" chứ không phải type string
+- VD: function err<E extends { reason: string }>(error: E) { ... }
+Nếu reason string là const trong list giá trị chỉ định thì có thể biến thành type const với:
+function err<const R extends string, E extends { reason: R }>(error: E) { ... }
+
+-> Nên xác định rõ type nếu hàm biến dùng ở nhiều nơi, recursive function, hàm conditional return ra các type khác nhau khiến typescript k tự động xđ type chuẩn
+VD: var a = [1,"a"]; thì là [string | number] nhưng nếu muốn giữ thứ tự thì var a: [number, string] = [1,"a"];
+VD: function t(b: boolean): { error: true, message: string } | { error: false, data: string, message: string } {
+  if(b) return { error: true, message: "abc" };
+  return { error: false, data: "123", message: "abc" };
 }
-Nhưng nếu làm v, hàm try throw 1 error mới thì từng chỗ tái sử dụng hàm đó mà catch Error sẽ đều phải sửa.
-Giải pháp trong typescript là biến error type thành phạm vi 1 list const, thì nếu list const thay đổi, trình biên dịch sẽ tự báo lỗi typescript ngay
-VD ban đầu: function err<E extends { reason: string }>(error: E) { ... }
-Biến reason thành const string: function err<const R extends string, E extends { reason: R }>(error: E) { ... }
 
 
