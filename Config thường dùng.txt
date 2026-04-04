@@ -1,0 +1,88 @@
+-> tsconfig.json:
+{
+  "compilerOptions": {
+    "target": "ES2023", // *Specify the target JS version, 'es5' for ECMAScript 5; "es6" for ecmascript 6
+    "useDefineForClassFields": true, // TypeScript tạo class field theo chuẩn JS mới, VD: class User { name = "A"; }
+    "module": "esnext", // *Specify the module code generation: 'esnext' for modern JavaScript modules. "commonjs" là tiêu chuẩn cho nodejs.
+    "lib": ["dom", "dom.iterable", "esnext", "ES2023"], // *Specify the library files to be included in the compilation. "es2015" fix lỗi promise, "dom" fix lỗi console
+    "types": ["vite/client"], // Loads global type definitions như import.meta.env
+    "skipLibCheck": true, // *Skips type checking of declaration files .d.ts
+    "allowImportingTsExtensions": true, // Cho phép import trực tiếp từ TS file
+    "verbatimModuleSyntax": true, // Typescript k tự sửa import/export mà giữ nguyên cú pháp đã code, tránh bug, tránh mất tree shaking
+    "moduleDetection": "force", // Bắt typescript coi mọi file là module, bth file k có import export luôn coi là global
+    "noEmit": true, // *Disables emitting files from the compilation.
+    "moduleResolution": "bundler", // *Determines how modules are resolved. VD 'node' mimics Node.js module resolution. 
+    "allowJs": true, // *file js vẫn chạy và import vào file ts như bth, default cũng là true. Dùng khi dự án đang migrate dần từ js sang ts
+    "checkJs": true, // check type kể cả là file js trong dự án ts. Thường set là false và từng file js dùng // @ts-check ở đầu file để xđ từng file js nào cần check 
+    "esModuleInterop": true, // *Enables interoperability between CommonJS and ES Modules, sẽ giúp việc import các mô-đun trở nên mượt mà hơn.
+    "resolveJsonModule": true, // *Allows importing JSON files as modules.
+    "isolatedModules": true, // *Đảm bảo mỗi file được xử lý như 1 module, compile độc lập k dựa vào file khác. Tức phải có ít nhất 1 export, k có sẽ báo lỗi.
+    "jsx": "preserve", // *Preserves JSX as part of the output.
+    "incremental": true, // *Enables incremental compilation for faster builds.
+    "removeComments": true, // *Removes comments from the output.
+    "preserveConstEnums": true, // Typescript có enum sang JS chuyển thành số. Config giữ `const enum` declarations in the output.
+    "alwaysStrict": true, // *Ensures 'use strict' is always emitted.
+    "strictNullChecks": true, // *Ensures `null` and `undefined` are only assignable to themselves and `any`.
+    "noUncheckedIndexedAccess": true, // Luôn coi truy cập index a[i] có thể undefined
+    "noImplicitAny": true, // *Raises an error on expressions and declarations with an implied `any` type.
+    "noImplicitReturns": true, // *Raises an error on functions that do not return a value in all code paths.
+    "noImplicitThis": true, // *Raises an error on `this` expressions with an implied `any` type.
+    "outDir": "out", // *Redirects output structure to the directory.
+    "declaration": true, // *Generates corresponding `.d.ts` files.
+    "sourceMap": true, // *Generates source map files.
+    "allowSyntheticDefaultImports": true, // *Cho import từ module k có default export. VD import React from "react"; Nếu k có buộc phải: import * as React from "react";
+    "plugins": [{ "name": "next" }], // Dùng typescript tốt hơn cho nextjs với plugin do nextjs cung cấp
+    "forceConsistentCasingInFileNames": true, // *Disallows inconsistently-cased references to the same file.
+    "watch": true, // thay đổi file ts tự compile lại, dùng option --watch cho tsc chứ nó chả có vai trò gì
+    "baseUrl": ".", // *Specifies the base directory to resolve non-relative module names.
+    "noErrorTruncation": false, // Khi hover vào có hiện full type hay bản shorter dễ nhìn hơn
+
+    "strict": true, // *Enables all strict type-checking options.
+    "paths": {
+      "@/*": ["./src/*"], // Maps `@/*` to `./src/*` for module resolution.
+      "@/public/*": ["./public/*"] // Maps `@/public/*` to `./public/*` for module resolution.
+    },
+    "noUnusedLocals": true, // *Raises an error on unused local variables.
+    "noUnusedParameters": true, // *Raises an error on unused parameters.
+    "allowUnusedLabels": false, // Label giống go-to, bỏ k dùng
+    "noUncheckedSideEffectImports": true, // Import file sai cú pháp k tồn tại thì báo lỗi
+    "noFallthroughCasesInSwitch": true, // *Disallows fallthrough cases in switch statements. case thiếu break sẽ lỗi.
+    "allowUnreachableCode": false, // *Warning if unreachable code. 
+    "noPropertyAccessFromIndexSignature": true, 
+    "erasableSyntaxOnly": true,
+    "noImplicitOverride": true, // Hàm nào override phải có keyword override
+    "exactOptionalPropertyType": true,
+  },
+  "exclude": ["./out/**/*", "./node_modules/**/*", "**/*.cy.ts"], // Excludes specified files and directories from the compilation.
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"] // Includes specified files and directories in the compilation.
+}
+
+--> "noPropertyAccessFromIndexSignature": true,
+type Settings = {
+  darkMode: boolean
+  [custom: string]: string | number
+}
+const setting: Setting = {
+  darkMode: true,
+  test: 1,
+}
+console.log(settings.test); => lỗi
+console.log(settings["test"]); => lỗi
+
+--> "erasableSyntaxOnly": true, các tính năng như enum các thứ sẽ k được dùng là đúng.
+Thay thế enum:
+C1: type Status = "pending" | "success" | "failed";
+C2: const Status = {
+  Pending: "pending",
+  Success: "success",
+  Failed: "failed",
+} as const;
+type Status = typeof Status[keyof typeof Status];
+setStatus(Status.Pending);
+
+--> "exactOptionalPropertyType": true, 
+VD: type User = { name?: string } thì name hoặc là k tồn tại hoặc là string, chứ k được gán name: undefined
+Làm như v sẽ chắc chắn hơn khi check if ("name" in user) nó ra true trong khi đáng lẽ name: undefined thì phải là false. Set v nó sẽ là false, tức undefined == k tồn tại
+
+
+
