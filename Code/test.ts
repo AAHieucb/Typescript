@@ -165,3 +165,4 @@ type RealObjectType2 = {
 
 function X<const T extends { [K in keyof typeof Car]?: boolean }>(column: T) {} // có typeof thì chỉ lấy Type của constructor truyền key là "table" ok
 function X2<const T extends { [K in keyof Car]?: boolean }>(column: T) {} // truyền key là "brand" vì k có typeof sẽ lấy key của Type Car bth
+
