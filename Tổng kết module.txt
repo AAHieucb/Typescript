@@ -24,6 +24,42 @@ Dùng a[b].includes() với a là {helmet?: string[], rarity: string[]}. Nếu b
 
 
 
+# Typescript tự infer type
+-> Type predicates
+function isEmployee(person: User | Employee): person is Employee {
+  return "email" in person;
+}
+=> Nhờ có person is Employee mà bên ngoài nó trả ra Employee thay vì User | Employee giúp dùng chuẩn hơn
+
+-> VD: 
+type LoadingLocationState = { state: string }
+type SuccessLocationState = { state: number, coords: { lat: number, lon: number } }
+type LocationState = LoadingLocationState | SuccessLocationState
+function printLocation(location: LocationState) {
+  if(typeof location.state === "string") {
+    // check bằng typeof thì location là LocationState chứ kp LoadingLocationState. Nó cần phải là hằng số check mới được, VD if (location.state == "Loading")
+  }
+}
+
+-> extends == là subset của
+string extends string | number => true
+string | number extends string => false
+T extends string với T = string | number => bị distribute ra (true | false)
+[T] extends [string] => thì lại true
+
+Dùng infer khi cần lấy type bên trong của conditional ra.
+VD: type MyAwaited<T> = T extends Promise<infer U> ? U : T; type A = MyAwaited<Promise<string>>; // string
+VD: type Generic<T> = T extends Array<infer U> ? U extends string ? number : U : never; const b = ["abc", 1]; const A: Generic<typeof b> // string | number
+VD: type CustomReturnType<T extends (...args: any[]) => any> = T extends (...args: any[]) => infer R ? R : never; => chính là ReturnType
+VD: type CustomAwait<T> = T extends Promise<infer R> ? R : never; => hoặc viết rõ CustomAwait<T extends Promise<any>> cũng được 
+
+Advance infer:
+VD có: "key:value" cần lấy ra object có type { key, value }
+type KeyValueSplitter<T extends string> = T extends `{infer K}:{infer V}` ? { key: K, value: V } : never;
+type A = KeyValueSplitter<"name:hieu">; => A là const type { key: name, value: hieu }
+
+
+
 #*** Utility trong typescript => ref tới typescript-util-types
 Bản chất pb: 
 - X là giá trị value, object instance
@@ -37,7 +73,12 @@ typeof của TS nhận value trả ra Type
 Thường trong <> cũng toàn là Type
 
 -> Dùng type khi cần định nghĩa cấu trúc 1 objects
-Dùng interface và class khi cần hướng đối tượng implement, extends lẫn nhau.
+Dùng interface và class khi cần hướng đối tượng implement, extends lẫn nhau. 
+VD: type B = A & C & { name: string } tương đương interface B extends A,C { }
+Thường chỉ dùng type vì union và primitive type trực tiếp tiện hơn. VD Interface chỉ dùng khi cần tính chất là:
+interface User { name: string }
+interface User { age: number }
+const user: User = { name: "abc", age: 1 } // buộc phải có cả 2 trường
 
 -> type A = ReturnType<typeof f1>; => type A là giá trị trả về của hàm f1
 X  Parameters nhưng Parameters trả ra mảng  ~  ConstructorParameters
