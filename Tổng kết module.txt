@@ -28,7 +28,9 @@ Dùng a[b].includes() với a là {helmet?: string[], rarity: string[]}. Nếu b
 function isEmployee(person: User | Employee): person is Employee {
   return "email" in person;
 }
-=> Nhờ có person is Employee mà bên ngoài nó trả ra Employee thay vì User | Employee giúp dùng chuẩn hơn
+if (isEmployee(person)) {
+  // Nhờ có person is Employee mà ở đây nó trả ra Employee thay vì User | Employee giúp dùng chuẩn hơn
+}
 
 VD: 
 type LoadingLocationState = { state: string }
@@ -36,7 +38,7 @@ type SuccessLocationState = { state: number, coords: { lat: number, lon: number 
 type LocationState = LoadingLocationState | SuccessLocationState
 function printLocation(location: LocationState) {
   if(typeof location.state === "string") {
-    // check bằng typeof thì location vẫn là LocationState chứ kp LoadingLocationState. Nó cần phải là hằng số mới được, VD if (location.state == "Loading")
+    // check bằng typeof thì location vẫn là LocationState chứ kp LoadingLocationState. Type cần phải là hằng số mới được, VD if (location.state == "Loading"), hoặc làm cách trên tách hàm ra và dùng is
   }
 }
 
