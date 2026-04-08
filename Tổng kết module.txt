@@ -218,6 +218,16 @@ enum Status2 {
 const s: Status = Status.Approved;
 console.log(s); // 1
 
+--> Thay thế enum:
+const Role = {
+  Admin: "admin",
+  User: "user"
+} as const;
+type Role = typeof Role[keyof typeof Role];
+const role: Role = Role.Admin;
+
+Nếu enum đơn giản có thể dùng: type Role = "admin" | "user" | "guest";
+
 -> namespace để gom nhóm code nhằm tránh trùng tên
 namespace User {
   const age = 20;
