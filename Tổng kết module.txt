@@ -164,7 +164,7 @@ updateUser(1, { name: "New Name" }); // K muốn update toàn bộ User mà ch�
 
 # Loose autocomplete
 type ModelName = "gpt-o4" | "test1" | "test"2 | (string & {});
-=> ModelName type vẫn chấp nhận mọi string nhưng sẽ có gợi ý autocomplete 3 options kia
+=> ModelName type vẫn chấp nhận mọi string khác nhưng sẽ có gợi ý autocomplete 3 options kia => luôn dùng khi cần list const kết hợp dynamic string
 
 -> Prettify
 type Prettify<T> = {
@@ -223,8 +223,8 @@ const Role = {
   Admin: "admin",
   User: "user"
 } as const;
-type Role = typeof Role[keyof typeof Role];
-const role: Role = Role.Admin;
+type RoleType = typeof Role[keyof typeof Role];
+const role: RoleType = Role.Admin;
 
 Nếu enum đơn giản có thể dùng: type Role = "admin" | "user" | "guest";
 
