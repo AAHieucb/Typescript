@@ -316,7 +316,7 @@ function getGrade(grade: Grade): string {
 
 
 
-# Generic type
+# Generic type default value
 Khi có nhiều type k xác định nhưng cùng common gì đó.
 VD tạo ra generic type Data cho ApiResponse:
 type ApiResponse<Data extends object = { status: number }> = {
